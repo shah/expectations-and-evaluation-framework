@@ -1,0 +1,207 @@
+scalar NameText
+scalar SmallText
+scalar MediumText
+scalar LargeText
+scalar ExtraLargeText
+
+scalar ErrorMessage
+scalar IdentityPrincipal
+scalar IdentityPassword
+scalar IdentityKey
+
+scalar Date
+scalar PastDate
+scalar FutureDate
+scalar DateTime
+scalar PastDateTime
+scalar FutureDateTime
+scalar Timestamp
+
+scalar AuthenticatedSessionTimeout
+
+scalar Result
+
+enum TeamType {
+  MARKETING
+  DEVELOPMENT
+}
+
+enum DataSourceEnvironment {
+  DEV
+  TEST
+  PRODUCTION
+}
+
+enum ObjecivePriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum ObjectiveStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
+
+enum KeyResultStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
+
+interface Party {
+  id: ID!
+  name: NameText!
+}
+
+type Person implements Party {
+  id: ID!
+  name: NameText!
+  firstName: NameText!
+  lastName: NameText!
+  users: [UserIdentity]
+  services: [ServiceIdentity]
+}
+
+type UserIdentity implements AuthenticationIdentity {
+  id: ID!
+  type: AuthenticationType!
+  principal: IdentityPrincipal!
+  password: IdentityPassword!
+  person: Person!
+}
+
+type ServiceIdentity implements AuthenticationIdentity {
+  id: ID!
+  type: AuthenticationType!
+  principal: IdentityPrincipal!
+  key: IdentityKey!
+}
+
+type Team implements Party {
+  id: ID!
+  name: NameText!
+  type: TeamType
+  units: [Team]
+  services: [ServiceIdentity]
+}
+
+type Organization implements Party {
+  id: ID!
+  name: NameText!
+  units: [Team]
+  services: [ServiceIdentity]
+}
+
+type Tenant implements Party {
+  id: ID!
+  name: NameText!
+  org: Organization!
+}
+
+interface Timestamped {
+  modifiedAt: DateTime
+  createdAt: DateTime
+}
+
+# Address type identifies Address attributes for any instance of an address including standardization details (where applicable)
+type Address {
+  address1: MediumText!
+  address2: MediumText
+  city: String!
+  state: State!
+  zipCode: String!
+  country: Country
+  latitude: Float
+  longitude: Float
+}
+
+type UserIdentifier {
+  user: ID!
+}
+
+interface Objective {
+  objectiveId: ID
+  name: NameText!
+  label: NameText!
+  priority: ObjecivePriority
+  status: objectiveStatus!
+  objectiveStart: DateTime
+  objectiveEnd: FutureDateTime
+  KeyResult: [KeyResult]
+  users: [UserIdentity]
+}
+
+# Need to include team,organization,party
+#Performance Management
+
+type Objectives implements Objective {
+  objectiveId: ID
+  name: NameText!
+  label: NameText!
+  priority: ObjecivePriority
+  status: objectiveStatus!
+  objectiveStart: DateTime
+  objectiveEnd: FutureDateTime
+  KeyResult: [KeyResult]
+  users: [UserIdentifier]
+  subObjectives: [Objectives]
+}
+
+
+
+type KeyResult {
+  keyResultId: ID
+  name: NameText!
+  label: NameText!
+  status: KeyResultStatus!
+  result: Result
+}
+
+input KeyResultInput {
+  keyResultId: ID
+  name: NameText!
+  label: NameText!
+  name: NameText!
+  status: KeyResultStatus!
+  result: Result
+}
+
+input UserIdentifierInput {
+  user: ID!
+}
+
+type Query {
+  getObjectives: [objectives]
+  getKeyResult: [KeyResult]
+}
+
+type Mutation {
+  addObjectives(
+    name: NameText!
+    label: NameText
+    key: NameText!
+    priority: ObjecivePriority
+    status: objectiveStatus
+    objectiveStart: DateTime
+    objectiveEnd: FutureDateTime
+    KeyResult: KeyResultInput
+    users: [UserIdentifierInput]
+  ): String
+
+  addKeyResult(
+    name: NameText!
+    label: NameText
+    key: NameText!
+    priority: ObjecivePriority
+    status: KeyResultStatus
+    Result: Result
+  ): String
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
