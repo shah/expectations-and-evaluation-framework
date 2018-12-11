@@ -177,8 +177,8 @@ input UserIdentifierInput {
 }
 
 type Query {
-  getObjectives: [objectives]
-  getKeyResult: [KeyResult]
+  getExpectation: [implementation]
+  getExpectationMatrix: [ExpectationMatrix]
 }
 
 type Mutation {
