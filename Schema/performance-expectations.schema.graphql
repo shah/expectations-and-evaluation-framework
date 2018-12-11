@@ -32,20 +32,20 @@ enum DataSourceEnvironment {
   PRODUCTION
 }
 
-enum ObjecivePriority {
+enum ExpectationPriority {
   LOW
   MEDIUM
   HIGH
   CRITICAL
 }
 
-enum ObjectiveStatus {
+enum ExpectationStatus {
   ACTIVE
   INACTIVE
   PENDING
 }
 
-enum KeyResultStatus {
+enum ExpectationMatrixStatus {
   ACTIVE
   INACTIVE
   PENDING
@@ -122,50 +122,53 @@ type UserIdentifier {
   user: ID!
 }
 
-interface Objective {
-  objectiveId: ID
+# OKR Framework OBjective
+# Goal Frameworks - Goals
+# Mission
+interface Expectation {
+  expectationId: ID
   name: NameText!
   label: NameText!
-  priority: ObjecivePriority
-  status: objectiveStatus!
-  objectiveStart: DateTime
-  objectiveEnd: FutureDateTime
-  KeyResult: [KeyResult]
+  priority: ExpectationPriority
+  status: expectationStatus!
+  expectationeStart: DateTime
+  expectationEnd: FutureDateTime
+  KeyRexpectationMatrixesult: [expectationMatrix]
   users: [UserIdentity]
 }
 
 # Need to include team,organization,party
-#Performance Management
+# Performance Management
 
-type Objectives implements Objective {
-  objectiveId: ID
+type implementation implements Expectation {
+  expectationId: ID
   name: NameText!
   label: NameText!
-  priority: ObjecivePriority
-  status: objectiveStatus!
-  objectiveStart: DateTime
-  objectiveEnd: FutureDateTime
-  KeyResult: [KeyResult]
+  priority: ExpectationPriority
+  status: expectationStatus!
+  expectationStart: DateTime
+  expectationEnd: FutureDateTime
+  expectationMatrix: [expectationMatrix]
   users: [UserIdentifier]
-  subObjectives: [Objectives]
+  subImplementation: [implementation]
 }
 
 
 
-type KeyResult {
-  keyResultId: ID
+type ExpectationMatrix {
+  expectationMatrixId: ID
   name: NameText!
   label: NameText!
-  status: KeyResultStatus!
+  status: ExpectationMatrixStatus!
   result: Result
 }
 
 input KeyResultInput {
-  keyResultId: ID
+  expectationMatrixId: ID
   name: NameText!
   label: NameText!
   name: NameText!
-  status: KeyResultStatus!
+  status: expectationMatrixStatus!
   result: Result
 }
 
@@ -183,20 +186,20 @@ type Mutation {
     name: NameText!
     label: NameText
     key: NameText!
-    priority: ObjecivePriority
-    status: objectiveStatus
+    priority: ExpectationPriority
+    status: ExpectationStatus
     objectiveStart: DateTime
     objectiveEnd: FutureDateTime
-    KeyResult: KeyResultInput
+    expectationMatrix: expectationMatrixInput
     users: [UserIdentifierInput]
   ): String
 
-  addKeyResult(
+  addExpectationMatrix(
     name: NameText!
     label: NameText
     key: NameText!
-    priority: ObjecivePriority
-    status: KeyResultStatus
+    priority: ExpectationPriority
+    status: ExpectationMatrixStatus
     Result: Result
   ): String
 }
