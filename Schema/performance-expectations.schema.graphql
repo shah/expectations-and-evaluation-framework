@@ -45,7 +45,7 @@ enum ExpectationStatus {
   PENDING
 }
 
-enum ExpectationMatrixStatus {
+enum ExpectationMetricStatus {
   ACTIVE
   INACTIVE
   PENDING
@@ -122,25 +122,22 @@ type UserIdentifier {
   user: ID!
 }
 
+# I Expectation
+# I ExpectationMetric 
+
+# Objective -> Expectation
+# Goal -> Expectation
+# Mission -> Expectation
+
+# KeyResult -> ExpectationMetric
+# KeyPerformanceIndicator -> 
+
+
 # OKR Framework OBjective
 # Goal Frameworks - Goals
 # Mission
+
 interface Expectation {
-  expectationId: ID
-  name: NameText!
-  label: NameText!
-  priority: ExpectationPriority
-  status: expectationStatus!
-  expectationeStart: DateTime
-  expectationEnd: FutureDateTime
-  KeyRexpectationMatrixesult: [expectationMatrix]
-  users: [UserIdentity]
-}
-
-# Need to include team,organization,party
-# Performance Management
-
-type implementation implements Expectation {
   expectationId: ID
   name: NameText!
   label: NameText!
@@ -148,27 +145,40 @@ type implementation implements Expectation {
   status: expectationStatus!
   expectationStart: DateTime
   expectationEnd: FutureDateTime
-  expectationMatrix: [expectationMatrix]
+}
+
+# Need to include team,organization,party
+# Performance Management
+
+type Objective implements Expectation {
+  expectationId: ID
+  name: NameText!
+  label: NameText!
+  priority: ExpectationPriority
+  status: expectationStatus!
+  expectationStart: DateTime
+  expectationEnd: FutureDateTime
+  expectationMetric: [expectationMetric]
   users: [UserIdentifier]
-  subImplementation: [implementation]
+  subObjectives: [Objective]
 }
 
 
 
-type ExpectationMatrix {
-  expectationMatrixId: ID
+type ExpectationMetric {
+  expectationMetricId: ID
   name: NameText!
   label: NameText!
-  status: ExpectationMatrixStatus!
+  status: ExpectationMetricStatus!
   result: Result
 }
 
-input KeyResultInput {
-  expectationMatrixId: ID
+input expectationMetricInput {
+  expectationMetricId: ID
   name: NameText!
   label: NameText!
   name: NameText!
-  status: expectationMatrixStatus!
+  status: ExpectationMetricStatus!
   result: Result
 }
 
@@ -177,8 +187,8 @@ input UserIdentifierInput {
 }
 
 type Query {
-  getExpectation: [implementation]
-  getExpectationMatrix: [ExpectationMatrix]
+  getExpectation: [Objective]
+  getExpectationMatrix: [ExpectationMetric]
 }
 
 type Mutation {
@@ -190,16 +200,16 @@ type Mutation {
     status: ExpectationStatus
     objectiveStart: DateTime
     objectiveEnd: FutureDateTime
-    expectationMatrix: expectationMatrixInput
+    expectationMetric: expectationMetricInput
     users: [UserIdentifierInput]
   ): String
 
-  addExpectationMatrix(
+  addExpectationMetric(
     name: NameText!
     label: NameText
     key: NameText!
     priority: ExpectationPriority
-    status: ExpectationMatrixStatus
+    status: ExpectationMetricStatus
     Result: Result
   ): String
 }
