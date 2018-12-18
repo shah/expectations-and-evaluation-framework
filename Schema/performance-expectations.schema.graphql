@@ -136,6 +136,7 @@ type UserIdentifier {
 # OKR Framework OBjective
 # Goal Frameworks - Goals
 # Mission
+# GQLGen
 
 interface Expectation {
   expectationId: ID
@@ -164,8 +165,15 @@ type Objective implements Expectation {
 }
 
 
+interface ExpectationMetric {
+  expectationMetricId: ID
+  name: NameText!
+  label: NameText!
+  status: ExpectationMetricStatus!
+  result: Result
+}
 
-type ExpectationMetric {
+type KeyResult implements ExpectationMetric {
   expectationMetricId: ID
   name: NameText!
   label: NameText!
